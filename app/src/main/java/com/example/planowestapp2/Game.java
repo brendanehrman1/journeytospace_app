@@ -29,10 +29,15 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private boolean actionDownFlag;
     private MotionEvent event;
 
+    private int width;
+    private int height;
+
     public Game(Context context) {
         super(context);
 
         getHolder().addCallback(this);
+
+        player = new Player(getContext(), 500, 500, 30);
 
         thread = new GameThread(this, getHolder());
         
@@ -91,11 +96,18 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        drawUPS(canvas);
-        drawFPS(canvas);
         if (upBtn == null) {
             instantiateValues(canvas);
         }
+        drawScreen(canvas);
+        drawObjects(canvas);
+
+        player.draw(canvas);
+    }
+
+    public void drawScreen(Canvas canvas) {
+        drawUPS(canvas);
+        drawFPS(canvas);
         Paint paint = new Paint();
         int color = ContextCompat.getColor(getContext(), R.color.magenta);
         paint.setColor(color);
@@ -103,23 +115,31 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawRect(downDisplay, paint);
         canvas.drawRect(leftDisplay, paint);
         canvas.drawRect(rightDisplay, paint);
+    }
 
-        player.draw(canvas);
+    public void drawObjects(Canvas canvas) {
+        Rect ground = new Rect(0, 200, 300, 300);
+        Paint paint = new Paint();
+        int color = ContextCompat.getColor(getContext(), R.color.green);
+        paint.setColor(color);
+        canvas.drawRect(ground, paint);
     }
 
     private void instantiateValues(Canvas c) {
+        int width = c.getWidth();
+        int height = c.getHeight();
         int leftSide = 25;
         int rightSide = leftSide + DPAD_SIZE;
-        int downSide = c.getHeight() - 25;
+        int downSide = height - 25;
         int upSide = downSide - DPAD_SIZE;
         upDisplay = new Rect(leftSide + (DPAD_SIZE / 3), upSide, rightSide - (DPAD_SIZE / 3), upSide + (DPAD_SIZE / 3));
-        downDisplay = new Rect(leftSide + (DPAD_SIZE / 3), downSide - (DPAD_SIZE / 3), 150, 700);
-        leftDisplay = new Rect(leftSide, 575, 100, downSide - (DPAD_SIZE / 3));
-        rightDisplay = new Rect(rightSide - (DPAD_SIZE / 3), upSide + (DPAD_SIZE / 3), rightSide, 625);
-        upBtn = new Rect(leftSide, 500, rightSide, upSide + (DPAD_SIZE / 3));
-        downBtn = new Rect(leftSide, downSide - (DPAD_SIZE / 3), rightSide, 700);
-        leftBtn = new Rect(leftSide, 500, 100, 700);
-        rightBtn = new Rect(rightSide - (DPAD_SIZE / 3), 500, rightSide, 700);
+        downDisplay = new Rect(leftSide + (DPAD_SIZE / 3), downSide - (DPAD_SIZE / 3), rightSide - (DPAD_SIZE / 3), downSide);
+        leftDisplay = new Rect(leftSide, upSide + (DPAD_SIZE / 3), leftSide + (DPAD_SIZE / 3), downSide - (DPAD_SIZE / 3));
+        rightDisplay = new Rect(rightSide - (DPAD_SIZE / 3), upSide + (DPAD_SIZE / 3), rightSide, downSide - (DPAD_SIZE / 3));
+        upBtn = new Rect(leftSide, upSide, rightSide, upSide + (DPAD_SIZE / 3));
+        downBtn = new Rect(leftSide, downSide - (DPAD_SIZE / 3), rightSide, downSide);
+        leftBtn = new Rect(leftSide, upSide, leftSide + (DPAD_SIZE / 3), downSide);
+        rightBtn = new Rect(rightSide - (DPAD_SIZE / 3), upSide, rightSide, downSide);
     }
 
     public void drawUPS(Canvas canvas) {
