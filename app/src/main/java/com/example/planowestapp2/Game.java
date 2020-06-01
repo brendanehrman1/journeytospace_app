@@ -12,6 +12,8 @@ import android.view.SurfaceView;
 
 import androidx.core.content.ContextCompat;
 
+import java.util.ArrayList;
+
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final int DPAD_SIZE = 200;
@@ -99,8 +101,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         if (upBtn == null) {
             instantiateValues(canvas);
         }
-        drawScreen(canvas);
         drawObjects(canvas);
+        drawScreen(canvas);
 
         player.draw(canvas);
     }
@@ -118,7 +120,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void drawObjects(Canvas canvas) {
-        Rect ground = new Rect(0, 200, 300, 300);
+        Rect ground = new Rect(0, height * 7 / 8, width, height);
+        player.addObject(ground);
         Paint paint = new Paint();
         int color = ContextCompat.getColor(getContext(), R.color.green);
         paint.setColor(color);
@@ -126,8 +129,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void instantiateValues(Canvas c) {
-        int width = c.getWidth();
-        int height = c.getHeight();
+        width = c.getWidth();
+        height = c.getHeight();
         int leftSide = 25;
         int rightSide = leftSide + DPAD_SIZE;
         int downSide = height - 25;
