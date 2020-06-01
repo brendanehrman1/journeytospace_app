@@ -28,8 +28,11 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private Rect downBtn;
     private Rect leftBtn;
     private Rect rightBtn;
-    private boolean actionDownFlag;
+    private Rect jumpBtn;
     private MotionEvent event;
+    boolean isUp;
+    boolean isDown;
+    int numTouches;
 
     private int width;
     private int height;
@@ -39,7 +42,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         getHolder().addCallback(this);
 
-        player = new Player(getContext(), 500, 500, 30);
+        player = new Player(getContext(), 0, 0, 30);
 
         thread = new GameThread(this, getHolder());
         
@@ -48,18 +51,25 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int action = event.getAction();
-
-        if (action == MotionEvent.ACTION_DOWN) {
+        int action = event.getAction() & 0xff;
+        //System.out.println(Integer.toHexString(action) + " " + event.getActionIndex());
+        //Down = 0, Up = 1, Move = 2, Pointer_Down = 5, Pointer-Up = 6
+        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
             this.event = event;
-            this.actionDownFlag = true;
+            numTouches++;
             return true;
         } else if (action == MotionEvent.ACTION_MOVE) {
             this.event = event;
             return true;
-        } else if (action == MotionEvent.ACTION_UP) {
+        } else if (action == MotionEvent.ACTION_POINTER_UP) {
+            this.event = event;
+            numTouches--;
+            return true;
+        }else if (action == MotionEvent.ACTION_UP) {
             this.event = null;
-            this.actionDownFlag = false;
+            isUp = false;
+            isDown = false;
+            numTouches = 0;
             return false;
         }
 
@@ -83,25 +93,33 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update() {
         player.update();
-        if (actionDownFlag) {
-            if (upBtn.contains((int) event.getX(), (int) event.getY()))
-                player.moveUp();
-            if (downBtn.contains((int) event.getX(), (int) event.getY()))
-                player.moveDown();
-            if (leftBtn.contains((int) event.getX(), (int) event.getY()))
+        for (int i = 0; i < numTouches; i++) {
+            if (upBtn.contains((int) event.getX(event.getPointerId(i)), (int) event.getY(event.getPointerId(i))))
+                isUp = true;
+            else
+                isUp = false;
+            if (downBtn.contains((int) event.getX(event.getPointerId(i)), (int) event.getY(event.getPointerId(i))))
+                isDown = true;
+            else
+                isDown = false;
+            if (leftBtn.contains((int) event.getX(event.getPointerId(i)), (int) event.getY(event.getPointerId(i))))
                 player.moveLeft();
-            if (rightBtn.contains((int) event.getX(), (int) event.getY()))
+            if (rightBtn.contains((int) event.getX(event.getPointerId(i)), (int) event.getY(event.getPointerId(i))))
                 player.moveRight();
+            if (jumpBtn.contains((int) event.getX(event.getPointerId(i)), (int) event.getY(event.getPointerId(i))) && !player.isJumping())
+                player.setJumping(true);
         }
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+        boolean first = false;
         if (upBtn == null) {
             instantiateValues(canvas);
+            first = true;
         }
-        drawObjects(canvas);
+        drawObjects(canvas, first);
         drawScreen(canvas);
 
         player.draw(canvas);
@@ -113,19 +131,30 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         Paint paint = new Paint();
         int color = ContextCompat.getColor(getContext(), R.color.magenta);
         paint.setColor(color);
+        paint.setTextSize(35);
         canvas.drawRect(upDisplay, paint);
         canvas.drawRect(downDisplay, paint);
         canvas.drawRect(leftDisplay, paint);
         canvas.drawRect(rightDisplay, paint);
+        canvas.drawRect(jumpBtn, paint);
+        canvas.drawText("UP: " + isUp, 100, 300, paint);
+        canvas.drawText("DOWN: " + isDown, 100, 400, paint);
+        canvas.drawText("TOUCHES: " + numTouches, 100, 500, paint);
     }
 
-    public void drawObjects(Canvas canvas) {
+    public void drawObjects(Canvas canvas, boolean first) {
         Rect ground = new Rect(0, height * 7 / 8, width, height);
-        player.addObject(ground);
+        Rect obstacle = new Rect(0, height * 2 / 3 - 50, width / 2, height * 2 / 3);
         Paint paint = new Paint();
         int color = ContextCompat.getColor(getContext(), R.color.green);
         paint.setColor(color);
         canvas.drawRect(ground, paint);
+        canvas.drawRect(obstacle, paint);
+        if (first) {
+            player.addObject(ground);
+            player.addObject(obstacle);
+            player.setPosition(width / 2, height * 7 / 8 - player.getRadius());
+        }
     }
 
     private void instantiateValues(Canvas c) {
@@ -143,6 +172,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         downBtn = new Rect(leftSide, downSide - (DPAD_SIZE / 3), rightSide, downSide);
         leftBtn = new Rect(leftSide, upSide, leftSide + (DPAD_SIZE / 3), downSide);
         rightBtn = new Rect(rightSide - (DPAD_SIZE / 3), upSide, rightSide, downSide);
+        jumpBtn = new Rect(width - DPAD_SIZE - 25, upSide, width - 25, downSide);
     }
 
     public void drawUPS(Canvas canvas) {
