@@ -63,7 +63,6 @@ class Player {
     public void update() {
         if (isJumping) {
             double changeBy = -8*jumpPoint + 64;
-            System.out.println(jumpPoint);
             jumpPoint++;
             if (changeBy > 0 && !moveUp(changeBy)) {
                 jumpPoint = 8;
@@ -135,7 +134,6 @@ class Player {
                 canMove = false;
             }
             if (objects.get(i).left < positionX + radius && objects.get(i).right > positionX - radius && objects.get(i).top - (positionY + radius) >= 0 && objects.get(i).top - (positionY + radius) < changeBy) {
-                System.out.println(objects.get(i).top + " " + objects.get(i).left);
                 obsDirBelow++;
             }
         }

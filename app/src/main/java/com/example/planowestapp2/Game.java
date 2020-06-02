@@ -32,7 +32,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private MotionEvent event;
     boolean isUp;
     boolean isDown;
-    int numTouches;
 
     private int width;
     private int height;
@@ -52,28 +51,21 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction() & 0xff;
-        //System.out.println(Integer.toHexString(action) + " " + event.getActionIndex());
+        System.out.println(Integer.toHexString(action) + " " + event.getActionIndex());
         //Down = 0, Up = 1, Move = 2, Pointer_Down = 5, Pointer-Up = 6
         if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
             this.event = event;
-            numTouches++;
-            return true;
         } else if (action == MotionEvent.ACTION_MOVE) {
             this.event = event;
-            return true;
         } else if (action == MotionEvent.ACTION_POINTER_UP) {
             this.event = event;
-            numTouches--;
-            return true;
         }else if (action == MotionEvent.ACTION_UP) {
             this.event = null;
             isUp = false;
             isDown = false;
-            numTouches = 0;
-            return false;
         }
 
-        return super.onTouchEvent(event);
+        return true;
     }
 
     @Override
@@ -93,21 +85,30 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update() {
         player.update();
+        int numTouches = 0;
+        if (event != null) {
+            numTouches = event.getPointerCount();
+            if (numTouches > 1)
+                System.out.println(event);
+        }
         for (int i = 0; i < numTouches; i++) {
-            if (upBtn.contains((int) event.getX(event.getPointerId(i)), (int) event.getY(event.getPointerId(i))))
-                isUp = true;
-            else
-                isUp = false;
-            if (downBtn.contains((int) event.getX(event.getPointerId(i)), (int) event.getY(event.getPointerId(i))))
-                isDown = true;
-            else
-                isDown = false;
-            if (leftBtn.contains((int) event.getX(event.getPointerId(i)), (int) event.getY(event.getPointerId(i))))
-                player.moveLeft();
-            if (rightBtn.contains((int) event.getX(event.getPointerId(i)), (int) event.getY(event.getPointerId(i))))
-                player.moveRight();
-            if (jumpBtn.contains((int) event.getX(event.getPointerId(i)), (int) event.getY(event.getPointerId(i))) && !player.isJumping())
-                player.setJumping(true);
+            int id = event.getPointerId(i);
+            if ((event.getAction() & 0xff) != MotionEvent.ACTION_POINTER_UP || event.getActionIndex() != event.findPointerIndex(id)) {
+                if (upBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id))))
+                    isUp = true;
+                else
+                    isUp = false;
+                if (downBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id))))
+                    isDown = true;
+                else
+                    isDown = false;
+                if (leftBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id))))
+                    player.moveLeft();
+                if (rightBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id))))
+                    player.moveRight();
+                if (jumpBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id))) && !player.isJumping())
+                    player.setJumping(true);
+            }
         }
     }
 
@@ -139,7 +140,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawRect(jumpBtn, paint);
         canvas.drawText("UP: " + isUp, 100, 300, paint);
         canvas.drawText("DOWN: " + isDown, 100, 400, paint);
-        canvas.drawText("TOUCHES: " + numTouches, 100, 500, paint);
     }
 
     public void drawObjects(Canvas canvas, boolean first) {
