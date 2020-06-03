@@ -79,7 +79,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     public static void increaseLevel() {
         screen++;
-        System.out.println(screen);
+        //System.out.println(screen);
         if (screen == level.length) {
             context.startActivity(new Intent(context, LevelActivity.class));
             screenTransition = true;
@@ -135,7 +135,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        System.out.println("DESTROYED");
+        //System.out.println("DESTROYED");
         boolean retry = true;
         while (retry) {
             try {
@@ -208,7 +208,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             }
             direction = getDirection(goingUp, goingDown, goingLeft, goingRight);
             if (isDashing) {
-                System.out.println(direction);
+                //System.out.println(direction);
                 player.dash(direction);
             }
         }
@@ -283,7 +283,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                 int index = i * LEVEL_WIDTH + j;
                 if (screen < level.length && !level[screen].substring(index, index + 1).equals(" ")) {
                     Rect rect = new Rect(j * (width / LEVEL_WIDTH), i * (height / LEVEL_HEIGHT), (j + 1) * (width / LEVEL_WIDTH), (i + 1) * (height / LEVEL_HEIGHT));
-                    int color = ContextCompat.getColor(getContext(), R.color.black);;
+                    int color = ContextCompat.getColor(getContext(), R.color.black);
                     Obstacle obstacle = new Obstacle(rect, level[screen].substring(index, index + 1));
                     if (obstacle.getType().equals("B"))
                         color = ContextCompat.getColor(getContext(), R.color.green);
@@ -291,6 +291,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                         color = ContextCompat.getColor(getContext(), R.color.red);
                     else if (obstacle.getType().equals("C"))
                         color = ContextCompat.getColor(getContext(), R.color.orange);
+                    else if (obstacle.getType().equals("P"))
+                        color = ContextCompat.getColor(getContext(), R.color.blue);
                     paint.setColor(color);
                     canvas.drawRect(rect, paint);
                     if (changed)

@@ -14,17 +14,17 @@ public class Level {
                     "B                              B" +
                     "B                              B" +
                     "B                              B" +
-                    "C                              B" +
-                    "C                              B" +
-                    "C               BB              " +
-                    "C               BB              " +
-                    "B         BBBBBBBB              " +
-                    "B     BBBBBBBBBBBB       BBBBBBB" +
+                    "C               BBBBB          B" +
+                    "C               BBBBB          B" +
+                    "C               BBBBB           " +
+                    "C          BBBBBBBBBB           " +
+                    "B          BBBBBBBBBB           " +
+                    "B     BBBBBBBBBBBBBBB      BBBBB" +
                     "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
                     ,
 
                     "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
-                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
+                    "B                              B" +
                     "B                              B" +
                     "B                              B" +
                     "B                              B" +
@@ -40,22 +40,41 @@ public class Level {
                     "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
                     "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
 
-                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
-                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
+                    "BBBBBBBBBBBBB    BBBBBBBBBBBBBBB" +
+                    "B                              B" +
+                    "BPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPB" +
+                    "B                              B" +
+                    "B       BBBBBBB                B" +
+                    "B                              B" +
+                    "B                  BBBBBBB     B" +
+                    "B                              B" +
+                    "B       BBBBBBB                B" +
+                    "                               B" +
+                    "                   BBBBBBB     B" +
+                    "B                              B" +
+                    "B       BBBBBBB                B" +
                     "B                              B" +
                     "B                              B" +
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+
+                    "BBBBBBBBBBBBB    BBBBBBBBBBBBBBB" +
+                    "B                              B" +
+                    "BPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPB" +
+                    "B                              B" +
+                    "B       BBBBBBB                B" +
+                    "B                              B" +
+                    "B                  BBBBBBB     B" +
+                    "B                              B" +
+                    "B       BBBBBBB                B" +
+                    "B                              B" +
+                    "B                  BBBBBBB     B" +
+                    "B                              B" +
+                    "B       BBBBBBB                B" +
                     "B                              B" +
                     "B                              B" +
-                    "B                              B" +
-                    "B                              B" +
-                    "B       BBBBBBSSSSBBBBBB       B" +
-                    "B       BBBBBBBBBBBBBBBB       B" +
-                    "B                              B" +
-                    "B                              B" +
-                    "B                       BBBBBBBB" +
-                    "B             BBBB      BBBBBBBB" +
-                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
-                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+                    "BBBBBBBBBBBBBPPPPBBBBBBBBBBBBBBB"
+
+
                     }
             };
     private static Point[][] startingLocs = {{new Point(2, 1), new Point(2, 2)}};
