@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 
 import androidx.core.content.ContextCompat;
@@ -11,7 +12,7 @@ import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
 
 class Player {
-    private static final int MAX_DASH = 8;
+    private static final int MAX_DASH = 3;
 
     private Context context;
     private double positionX;
@@ -21,7 +22,7 @@ class Player {
     private int speed;
     private int canvasWidth;
     private int canvasHeight;
-    private ArrayList<Rect> objects;
+    private ArrayList<Obstacle> objects;
     private boolean isJumping;
     private int jumpPoint;
     private boolean lastRight;
@@ -29,12 +30,15 @@ class Player {
     private boolean dashed;
     private int dashPoint;
     private int direction;
+    private boolean isClimbing;
+    private int checkPointX;
+    private int checkPointY;
 
     public Player(Context context, double positionX, double positionY, double radius) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.radius = radius;
-        this.speed = 16;
+        this.speed = 8;
         this.jumpPoint = 0;
         this.lastRight = true;
         this.objects = new ArrayList<>();
@@ -57,12 +61,27 @@ class Player {
         return dashed;
     }
 
+    public boolean isClimbing() { return isClimbing; }
+
     public void jump() {
         this.isJumping = true;
+        this.isClimbing = false;
+        this.jumpPoint = 0;
+    }
+
+    public void climb() {
+        this.isClimbing = true;
+        this.isDashing = false;
+        this.isJumping = false;
     }
 
     public double getRadius() {
         return radius;
+    }
+
+    public void setCheckPoint(int x, int y) {
+        checkPointX = x;
+        checkPointY = y;
     }
 
     public void draw(Canvas canvas) {
@@ -74,7 +93,7 @@ class Player {
 
     public void update() {
         if (isDashing) {
-            double changeBy = speed * 2;
+            double changeBy = speed * 8;
             if (dashPoint == MAX_DASH) {
                 isDashing = false;
                 isJumping = true;
@@ -98,7 +117,7 @@ class Player {
             }
         }
         if (isJumping) {
-            double changeBy = -8*jumpPoint + 64;
+            double changeBy = -4*jumpPoint + 32;
             jumpPoint++;
             if (changeBy > 0 && !moveUp(changeBy)) {
                 jumpPoint = 8;
@@ -112,10 +131,10 @@ class Player {
 
     public void resetObstacles() {
         objects = new ArrayList<>();
-        objects.add(new Rect(0, -speed, canvasWidth, 0));
-        objects.add(new Rect(0, canvasHeight, canvasWidth, canvasHeight + speed));
-        objects.add(new Rect(-speed, 0, 0, canvasHeight));
-        objects.add(new Rect(canvasWidth, 0, canvasWidth + speed, canvasHeight));
+        objects.add(new Obstacle(new Rect(0, -speed, canvasWidth, 0), "B"));
+        objects.add(new Obstacle(new Rect(0, canvasHeight, canvasWidth, canvasHeight + speed), "B"));
+        objects.add(new Obstacle(new Rect(-speed, 0, 0, canvasHeight), "B"));
+        objects.add(new Obstacle(new Rect(canvasWidth, 0, canvasWidth + speed, canvasHeight), "B"));
     }
 
     public void setPosition(double x, double y) {
@@ -123,8 +142,8 @@ class Player {
         this.positionY = y;
     }
 
-    public void addObject(Rect r) {
-        objects.add(r);
+    public void addObject(Obstacle o) {
+        objects.add(o);
     }
 
     public boolean moveRight() {
@@ -147,145 +166,257 @@ class Player {
         boolean canMove = true;
         boolean hitRightWall = false;
         double defaultPosition = Integer.MAX_VALUE;
+        Obstacle defaultObstacle = null;
+        boolean touchSpikes = false;
         int obsDirBelow = 0;
         for (int i = 0; i < objects.size(); i++) {
-            if (objects.get(i).top < positionY + radius && objects.get(i).bottom > positionY - radius) {
-                if (objects.get(i).left >= positionX - radius && objects.get(i).left <= positionX + radius + changeBy && objects.get(i).left < canvasWidth && objects.get(i).right > 0) {
-                    if (objects.get(i).left - radius < defaultPosition)
-                        defaultPosition = objects.get(i).left - radius;
+            Rect rect = objects.get(i).getRect();
+            if (rect.top < positionY + radius && rect.bottom > positionY - radius) {
+                if (rect.left >= positionX - radius && rect.left <= positionX + radius + changeBy && rect.left < canvasWidth && rect.right > 0) {
+                    if (rect.left - radius < defaultPosition) {
+                        defaultPosition = rect.left - radius;
+                        defaultObstacle = objects.get(i);
+                    }
                     canMove = false;
                 } else {
-                    if (objects.get(i).left == canvasWidth && objects.get(i).left <= positionX - radius + changeBy) {
+                    if (rect.left == canvasWidth && rect.left <= positionX - radius + changeBy) {
                         hitRightWall = true;
                         canMove = false;
                     }
                 }
             }
-            if (objects.get(i).left < positionX + radius && objects.get(i).right > positionX - radius && objects.get(i).top - (positionY + radius) >= 0 && objects.get(i).top - (positionY + radius) < changeBy) {
+            if (rect.left < positionX + radius && rect.right > positionX - radius && rect.top - (positionY + radius) >= 0 && rect.top - (positionY + radius) < changeBy) {
                 obsDirBelow++;
             }
-        }
-        if (canMove)
-            positionX += changeBy;
-        else {
-            if (hitRightWall) {
-                Game.increaseLevel();
-                setPosition(0, positionY);
-            } else {
-                positionX = defaultPosition;
-                //System.out.println("HERE");
+            if (objects.get(i).getType().equals("S") && (
+                    rect.left > positionX - radius && rect.left < positionX + radius && positionY + radius - rect.top == 0 ||
+                            rect.left > positionX - radius && rect.left < positionX + radius && rect.bottom - (positionY - radius) == 0 ||
+                            rect.top > positionY - radius && rect.top < positionY + radius && positionX - radius - rect.right == 0 ||
+                            rect.top > positionY - radius && rect.top < positionY + radius && rect.left - (positionX + radius) == 0)) {
+                touchSpikes = true;
+                System.out.println("TOUCH");
+            } else if (objects.get(i).getType().equals("S")) {
+                //System.out.println((rect.left > positionX - radius) + " " + (rect.left < positionX + radius));
             }
         }
-        if (!isDashing && !isJumping && obsDirBelow == 0) {
-            isJumping = true;
-            jumpPoint = 9;
+        if (touchSpikes) {
+            setPosition(checkPointX, checkPointY);
+            return false;
+        } else {
+            if (canMove)
+                positionX += changeBy;
+            else {
+                if (hitRightWall) {
+                    Game.increaseLevel();
+                    setPosition(0, positionY);
+                    Point newCheck = Level.getStart(Game.getLevel(), Game.getScreen());
+                    setCheckPoint(newCheck.x, newCheck.y);
+                } else if (obsDirBelow == 0 && defaultObstacle.getType().equals("C")){
+                    positionX = defaultPosition;
+                    isJumping = false;
+                    isDashing = false;
+                    isClimbing = true;
+                    //System.out.println("HERE");
+                }
+            }
+            if (!isClimbing && !isDashing && !isJumping && obsDirBelow == 0) {
+                isJumping = true;
+                jumpPoint = 9;
+                System.out.println("HERE");
+            }
+            lastRight = true;
+            return canMove;
         }
-        lastRight = true;
-        return canMove;
     }
 
     public boolean moveLeft(double changeBy) {
         boolean canMove = true;
         boolean hitLeftWall = false;
         double defaultPosition = -1;
+        Obstacle defaultObstacle = null;
         int obsDirBelow = 0;
+        boolean touchSpikes = false;
         for (int i = 0; i < objects.size(); i++) {
-            if (objects.get(i).top < positionY + radius && objects.get(i).bottom > positionY - radius) {
-                if (objects.get(i).right <= positionX - radius && objects.get(i).right >= positionX - radius - changeBy && objects.get(i).left < canvasWidth && (objects.get(i).right > 0 || Game.getLevel() == 0)) {
-                    if (objects.get(i).right + radius > defaultPosition)
-                        defaultPosition = objects.get(i).right + radius;
+            Rect rect = objects.get(i).getRect();
+            if (rect.top < positionY + radius && rect.bottom > positionY - radius) {
+                if (rect.right <= positionX - radius && rect.right >= positionX - radius - changeBy && rect.left < canvasWidth && (rect.right > 0 || Game.getScreen() == 0)) {
+                    if (rect.right + radius > defaultPosition) {
+                        defaultPosition = rect.right + radius;
+                        defaultObstacle = objects.get(i);
+                    }
                     canMove = false;
                 } else {
-                    if (objects.get(i).right == 0 && objects.get(i).right >= positionX + radius - changeBy) {
+                    if (rect.right == 0 && rect.right >= positionX + radius - changeBy) {
                         hitLeftWall = true;
                         canMove = false;
                     }
                 }
             }
-            if (objects.get(i).left < positionX + radius && objects.get(i).right > positionX - radius && objects.get(i).top - (positionY + radius) >= 0 && objects.get(i).top - (positionY + radius) < changeBy) {
+            if (rect.left < positionX + radius && rect.right > positionX - radius && rect.top - (positionY + radius) >= 0 && rect.top - (positionY + radius) < changeBy) {
                 obsDirBelow++;
             }
-        }
-        if (canMove) {
-            positionX -= changeBy;
-        } else {
-            if (hitLeftWall && Game.getLevel() > 0) {
-                Game.decreaseLevel();
-                System.out.println("LEFT");
-                setPosition(canvasWidth, positionY);
-            } else {
-                positionX = defaultPosition;
+            if (objects.get(i).getType().equals("S") && (
+                    rect.left > positionX - radius && rect.left < positionX + radius && positionY + radius - rect.top == 0 ||
+                            rect.left > positionX - radius && rect.left < positionX + radius && rect.bottom - (positionY - radius) == 0 ||
+                            rect.top > positionY - radius && rect.top < positionY + radius && positionX - radius - rect.right == 0 ||
+                            rect.top > positionY - radius && rect.top < positionY + radius && rect.left - (positionX + radius) == 0)) {
+                touchSpikes = true;
+                System.out.println("TOUCH");
+            } else if (objects.get(i).getType().equals("S")) {
+                //System.out.println((rect.left > positionX - radius) + " " + (rect.left < positionX + radius));
             }
         }
-        if (!isDashing && !isJumping && obsDirBelow == 0) {
-            isJumping = true;
-            jumpPoint = 9;
+        if (touchSpikes) {
+            setPosition(checkPointX, checkPointY);
+            return false;
+        } else {
+            if (canMove) {
+                positionX -= changeBy;
+            } else {
+                if (hitLeftWall && Game.getScreen() > 0) {
+                    Game.decreaseLevel();
+                    System.out.println("LEFT");
+                    setPosition(canvasWidth, positionY);
+                    Point newCheck = Level.getStart(Game.getLevel(), Game.getScreen());
+                    setCheckPoint(newCheck.x, newCheck.y);
+                } else if (obsDirBelow == 0 && defaultObstacle.getType().equals("C")){
+                    positionX = defaultPosition;
+                    isJumping = false;
+                    isDashing = false;
+                    isClimbing = true;
+                }
+            }
+            if (!isClimbing && !isDashing && !isJumping && obsDirBelow == 0) {
+                isJumping = true;
+                jumpPoint = 9;
+                System.out.println("HERE");
+            }
+            lastRight = false;
+            return canMove;
         }
-        lastRight = false;
-        return canMove;
     }
 
     public boolean moveUp(double changeBy) {
         boolean canMove = true;
         boolean hitTopWall = false;
+        boolean touchSpikes = false;
+        boolean touchWall = false;
         double defaultPosition = -1;
         for (int i = 0; i < objects.size(); i++) {
-            if (objects.get(i).left < positionX + radius && objects.get(i).right > positionX - radius) {
-                if (objects.get(i).bottom <= positionY - radius && objects.get(i).bottom >= positionY - radius - changeBy && objects.get(i).top < canvasHeight && objects.get(i).bottom > 0) {
-                    if (objects.get(i).bottom + radius > defaultPosition)
-                        defaultPosition = objects.get(i).bottom + radius;
+            Rect rect = objects.get(i).getRect();
+            if (rect.left < positionX + radius && rect.right > positionX - radius) {
+                if (rect.bottom <= positionY - radius && rect.bottom >= positionY - radius - changeBy && rect.top < canvasHeight && rect.bottom > 0) {
+                    if (rect.bottom + radius > defaultPosition)
+                        defaultPosition = rect.bottom + radius;
                     canMove = false;
                 } else {
-                    if (objects.get(i).bottom == 0 && objects.get(i).bottom <= positionY + radius && objects.get(i).bottom >= positionY + radius - changeBy) {
+                    if (rect.bottom == 0 && rect.bottom <= positionY + radius && rect.bottom >= positionY + radius - changeBy) {
                         hitTopWall = true;
                         canMove = false;
                     }
                 }
             }
-        }
-        if (canMove) {
-            positionY -= changeBy;
-        } else {
-            if (hitTopWall) {
-                Game.increaseLevel();
-                setPosition(positionX, canvasHeight);
-            } else {
-                //System.out.println("HERE");
-                positionY = defaultPosition;
+            if (objects.get(i).getType().equals("C") && rect.top > positionY - radius && rect.top < positionY + radius && positionX - radius - rect.right == 0 ||
+                    rect.top > positionY - radius && rect.top < positionY + radius && rect.left - (positionX + radius) == 0) {
+                touchWall = true;
+            }
+            if (objects.get(i).getType().equals("S") && (
+                    rect.left > positionX - radius && rect.left < positionX + radius && positionY + radius - rect.top == 0 ||
+                            rect.left > positionX - radius && rect.left < positionX + radius && rect.bottom - (positionY - radius) == 0 ||
+                            rect.top > positionY - radius && rect.top < positionY + radius && positionX - radius - rect.right == 0 ||
+                            rect.top > positionY - radius && rect.top < positionY + radius && rect.left - (positionX + radius) == 0)) {
+                touchSpikes = true;
+                System.out.println("TOUCH");
+            } else if (objects.get(i).getType().equals("S")) {
+                //System.out.println((rect.left > positionX - radius) + " " + (rect.left < positionX + radius));
             }
         }
-        return canMove;
+        if (touchSpikes) {
+            setPosition(checkPointX, checkPointY);
+            return false;
+        } else {
+            if (canMove) {
+                if (!isClimbing || touchWall)
+                    positionY -= changeBy;
+                else if (isClimbing && !touchWall) {
+                    isClimbing = false;
+                    isJumping = true;
+                    jumpPoint = 9;
+                }
+            } else {
+                if (hitTopWall) {
+                    Game.increaseLevel();
+                    setPosition(positionX, canvasHeight);
+                    Point newCheck = Level.getStart(Game.getLevel(), Game.getScreen());
+                    setCheckPoint(newCheck.x, newCheck.y);
+                } else {
+                    //System.out.println("HERE");
+                    positionY = defaultPosition;
+                }
+            }
+            return canMove;
+        }
     }
 
     public boolean moveDown(double changeBy) {
         boolean canMove = true;
         boolean hitBottomWall = false;
+        boolean touchWall = false;
+        boolean touchSpikes = false;
         double defaultPosition = Integer.MAX_VALUE;
         for (int i = 0; i < objects.size(); i++) {
-            if (objects.get(i).left < positionX + radius && objects.get(i).right > positionX - radius) {
-                if (objects.get(i).top >= positionY + radius && objects.get(i).top <= positionY + radius + changeBy && objects.get(i).top < canvasHeight && objects.get(i).bottom > 0) {
-                    if (objects.get(i).top - radius < defaultPosition)
-                        defaultPosition = objects.get(i).top - radius;
+            Rect rect = objects.get(i).getRect();
+            if (rect.left < positionX + radius && rect.right > positionX - radius) {
+                if (rect.top >= positionY + radius && rect.top <= positionY + radius + changeBy && rect.top < canvasHeight && rect.bottom > 0) {
+                    if (rect.top - radius < defaultPosition)
+                        defaultPosition = rect.top - radius;
                     canMove = false;
                 } else {
-                    if (objects.get(i).bottom == canvasHeight && objects.get(i).top >= positionY - radius && objects.get(i).top <= positionY - radius + changeBy) {
+                    if (rect.bottom == canvasHeight && rect.top >= positionY - radius && rect.top <= positionY - radius + changeBy) {
                         hitBottomWall = true;
                         canMove = false;
                     }
                 }
             }
-        }
-        if (canMove) {
-            positionY += changeBy;
-        } else {
-            if (hitBottomWall && Game.getLevel() > 0) {
-                Game.decreaseLevel();
-                setPosition(positionX, radius);
-            } else {
-                positionY = defaultPosition;
+            if (objects.get(i).getType().equals("C") && rect.top > positionY - radius && rect.top < positionY + radius && positionX - radius - rect.right == 0 ||
+                    rect.top > positionY - radius && rect.top < positionY + radius && rect.left - (positionX + radius) == 0) {
+                touchWall = true;
+            }
+            if (objects.get(i).getType().equals("S") && (
+                    rect.left > positionX - radius && rect.left < positionX + radius && positionY + radius - rect.top == 0 ||
+                            rect.left > positionX - radius && rect.left < positionX + radius && rect.bottom - (positionY - radius) == 0 ||
+                            rect.top > positionY - radius && rect.top < positionY + radius && positionX - radius - rect.right == 0 ||
+                            rect.top > positionY - radius && rect.top < positionY + radius && rect.left - (positionX + radius) == 0)) {
+                touchSpikes = true;
+                System.out.println("TOUCH");
+            } else if (objects.get(i).getType().equals("S")) {
+                //System.out.println((rect.left > positionX - radius) + " " + (rect.left < positionX + radius));
             }
         }
-        return canMove;
+        if (touchSpikes) {
+            setPosition(checkPointX, checkPointY);
+            return false;
+        } else {
+            if (canMove) {
+                if (!isClimbing || touchWall)
+                    positionY += changeBy;
+                else if (isClimbing && !touchWall) {
+                    isClimbing = false;
+                    isJumping = true;
+                    jumpPoint = 9;
+                }
+            } else {
+                if (hitBottomWall && Game.getScreen() > 0) {
+                    Game.decreaseLevel();
+                    setPosition(positionX, radius);
+                    Point newCheck = Level.getStart(Game.getLevel(), Game.getScreen());
+                    setCheckPoint(newCheck.x, newCheck.y);
+                } else {
+                    positionY = defaultPosition;
+                }
+            }
+            return canMove;
+        }
     }
 
     public void dash(int direction) {
@@ -294,5 +425,6 @@ class Player {
         this.dashed = true;
         this.isDashing = true;
         this.isJumping = false;
+        this.isClimbing = false;
     }
 }

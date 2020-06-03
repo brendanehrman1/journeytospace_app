@@ -7,4 +7,6 @@
     <color name="magenta">#FF09FF</color>
     <color name="green">#06AF06</color>
     <color name="black">#000000</color>
+    <color name="red">#FF0000</color>
+    <color name="orange">#FF9100</color>
 </resources>

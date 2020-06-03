@@ -20,7 +20,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final int DPAD_SIZE = 200;
     private static final int LEVEL_WIDTH = 32;
-    private static final int LEVEL_HEIGHT = 12;
+    private static final int LEVEL_HEIGHT = 16;
 
     private static Context context;
     private Player player;
@@ -42,6 +42,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private int direction;
     private boolean isLocked;
     private static String[] level;
+    private static int levelNum;
     private static int screen;
     private static boolean screenTransition;
     private static boolean screenChanged;
@@ -69,7 +70,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         screenChanged = true;
 
-        this.level = Level.getLevel(intent.getIntExtra("LEVEL", 1));
+        this.levelNum = intent.getIntExtra("LEVEL", 1);
+
+        this.level = Level.getLevel(levelNum);
 
         setFocusable(true);
     }
@@ -78,7 +81,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         screen++;
         System.out.println(screen);
         if (screen == level.length) {
-            context.startActivity(new Intent(context, MainActivity.class));
+            context.startActivity(new Intent(context, LevelActivity.class));
             screenTransition = true;
         } else {
             screenChanged = true;
@@ -94,7 +97,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public static int getLevel() {
+    public static int getLevel() { return levelNum; }
+
+    public static int getScreen() {
         return screen;
     }
 
@@ -169,16 +174,22 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                     }
                     if (!player.isDashing() && upBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id)))) {
                         goingUp = true;
+                        if (player.isClimbing())
+                            player.moveUp();
                     }
                     if (!player.isDashing() && downBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id)))) {
                         goingDown = true;
+                        if (player.isClimbing())
+                            player.moveDown();
                     }
                     if (!player.isDashing() && leftBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id)))) {
-                        player.moveLeft();
+                        if (!player.isClimbing())
+                            player.moveLeft();
                         goingLeft = true;
                     }
                     if (!player.isDashing() && rightBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id)))) {
-                        player.moveRight();
+                        if (!player.isClimbing())
+                            player.moveRight();
                         goingRight = true;
                     }
                     if (jumpBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id))) && !player.isJumping())
@@ -267,21 +278,30 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             player.resetObstacles();
         }
         Paint paint = new Paint();
-        int color = ContextCompat.getColor(getContext(), R.color.green);
-        paint.setColor(color);
         for (int i = 0; i < LEVEL_HEIGHT; i++) {
             for (int j = 0; j < LEVEL_WIDTH; j++) {
                 int index = i * LEVEL_WIDTH + j;
-                if (screen < level.length && level[screen].substring(index, index + 1).equals("B")) {
-                    Rect obstacle = new Rect(j * (width / LEVEL_WIDTH), i * (height / LEVEL_HEIGHT), (j + 1) * (width / LEVEL_WIDTH), (i + 1) * (height / LEVEL_HEIGHT));
-                    canvas.drawRect(obstacle, paint);
+                if (screen < level.length && !level[screen].substring(index, index + 1).equals(" ")) {
+                    Rect rect = new Rect(j * (width / LEVEL_WIDTH), i * (height / LEVEL_HEIGHT), (j + 1) * (width / LEVEL_WIDTH), (i + 1) * (height / LEVEL_HEIGHT));
+                    int color = ContextCompat.getColor(getContext(), R.color.black);;
+                    Obstacle obstacle = new Obstacle(rect, level[screen].substring(index, index + 1));
+                    if (obstacle.getType().equals("B"))
+                        color = ContextCompat.getColor(getContext(), R.color.green);
+                    else if (obstacle.getType().equals("S"))
+                        color = ContextCompat.getColor(getContext(), R.color.red);
+                    else if (obstacle.getType().equals("C"))
+                        color = ContextCompat.getColor(getContext(), R.color.orange);
+                    paint.setColor(color);
+                    canvas.drawRect(rect, paint);
                     if (changed)
                         player.addObject(obstacle);
                 }
             }
         }
         if (first) {
-            player.setPosition(width / 2, height * (LEVEL_HEIGHT - 1) / LEVEL_HEIGHT - player.getRadius());
+            Point start = Level.getStart(levelNum, screen);
+            player.setPosition((double)(start.x) / LEVEL_WIDTH * width, (1 - ((double)(start.y) / LEVEL_HEIGHT)) * height - player.getRadius());
+            player.setCheckPoint((int)((double)(start.x) / LEVEL_WIDTH * width), (int)((1 - ((double)(start.y) / LEVEL_HEIGHT)) * height - player.getRadius()));
         }
     }
 

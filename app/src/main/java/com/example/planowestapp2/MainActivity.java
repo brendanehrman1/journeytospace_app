@@ -20,9 +20,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startGame(View v) {
-        Intent intent = new Intent(MainActivity.this, GameActivity.class);
+        Intent intent = new Intent(MainActivity.this, LevelActivity.class);
         intent.putExtra("LOCK", isLocked);
-        intent.putExtra("LEVEL", 1);
         startActivity(intent);
     }
 
