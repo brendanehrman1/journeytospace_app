@@ -14,8 +14,13 @@ public class GameThread extends Thread {
     private Game game;
 
     public GameThread(Game game, SurfaceHolder surfaceHolder) {
+        super();
         this.game = game;
         this.surfaceHolder = surfaceHolder;
+    }
+
+    public void setRunning(boolean isRunning) {
+        this.isRunning = isRunning;
     }
 
     public double getAverageFPS() {
@@ -24,11 +29,6 @@ public class GameThread extends Thread {
 
     public double getAverageUPS() {
         return averageUPS;
-    }
-
-    public void startLoop() {
-        isRunning = true;
-        start();
     }
 
     @Override

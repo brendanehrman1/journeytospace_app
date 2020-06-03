@@ -10,9 +10,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar.FullScreen">
-        <activity android:name=".MainActivity"
+        <activity android:name=".OptionsActivity"></activity>
+        <activity android:name=".GameActivity" />
+        <activity
+            android:name=".MainActivity"
             android:screenOrientation="landscape"
-            tools:ignore="LockedOrientationActivity" >
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
