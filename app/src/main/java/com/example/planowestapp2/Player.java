@@ -61,7 +61,9 @@ class Player {
         return dashed;
     }
 
-    public boolean isClimbing() { return isClimbing; }
+    public boolean isClimbing() {
+        return isClimbing;
+    }
 
     public void jump() {
         this.isJumping = true;
@@ -79,8 +81,7 @@ class Player {
     }
 
     public void draw(Canvas canvas) {
-        canvas.drawCircle((float)positionX, (float)positionY, (float)radius, paint);
-        boolean canvasCreated = canvasWidth == 0;
+        canvas.drawCircle((float) positionX, (float) positionY, (float) radius, paint);
         canvasWidth = canvas.getWidth();
         canvasHeight = canvas.getHeight();
     }
@@ -88,26 +89,50 @@ class Player {
     public void update() {
         if (isDashing) {
             double changeBy = speed * 4;
-            if (direction % 2 == 1 && dashPoint == MAX_DASH * 2 / 3 || dashPoint == MAX_DASH) {
+            if (direction % 2 == 1 && dashPoint >= MAX_DASH * 2 / 3 || dashPoint >= MAX_DASH) {
                 isDashing = false;
                 isJumping = true;
                 jumpPoint = 8;
                 direction = -1;
             } else {
+                boolean up = false;
+                boolean down = false;
+                boolean left = false;
+                boolean right = false;
                 if ((direction == -1 && lastRight || direction == 0) && !moveRight(changeBy) ||
                         (direction == -1 && !lastRight || direction == 4) && !moveLeft(changeBy) ||
-                        direction == 1 && (!moveRight(changeBy) || !moveUp(changeBy)) ||
+                        direction == 1 && ((right = !moveRight(changeBy)) || (up = !moveUp(changeBy))) ||
                         direction == 2 && (!moveUp(changeBy)) ||
-                        direction == 3 && (!moveLeft(changeBy) || !moveUp(changeBy)) ||
-                        direction == 5 && (!moveLeft(changeBy) || !moveDown(changeBy)) ||
+                        direction == 3 && ((left = !moveLeft(changeBy)) || (up = !moveUp(changeBy))) ||
+                        direction == 5 && ((left = !moveLeft(changeBy)) || (down = !moveDown(changeBy))) ||
                         direction == 6 && (!moveDown(changeBy)) ||
-                        direction == 7 && (!moveRight(changeBy) || !moveDown(changeBy))) {
+                        direction == 7 && ((right = !moveRight(changeBy)) || (down = !moveDown(changeBy)))) {
                     if (!isClimbing) {
-                        if (direction == 1 || direction == 3)
-                            direction = 2;
-                        else if (direction == 5 || direction == 7)
-                            direction = 6;
-                        else {
+                        if (direction == 1) {
+                            if (right)
+                                direction = 2;
+                            else
+                                direction = 0;
+                            dashPoint = MAX_DASH - 2;
+                        } else if (direction == 3) {
+                            if (left)
+                                direction = 2;
+                            else
+                                direction = 4;
+                            dashPoint = MAX_DASH - 2;
+                        } else if (direction == 5) {
+                            if (left)
+                                direction = 6;
+                            else
+                                direction = 4;
+                            dashPoint = MAX_DASH - 2;
+                        } else if (direction == 7) {
+                            if (right)
+                                direction = 6;
+                            else
+                                direction = 0;
+                            dashPoint = MAX_DASH - 2;
+                        } else {
                             isDashing = false;
                             isJumping = true;
                             jumpPoint = 8;
@@ -119,7 +144,7 @@ class Player {
             }
         }
         if (isJumping) {
-            double changeBy = -4*jumpPoint + 32;
+            double changeBy = -4 * jumpPoint + 32;
             jumpPoint++;
             if (changeBy > 0 && !moveUp(changeBy)) {
                 jumpPoint = 8;
@@ -211,10 +236,10 @@ class Player {
                 if (hitRightWall) {
                     //System.out.println("RIGHT");
                     Game.increaseLevel();
-                    setPosition(0, positionY);
+                    setPosition(-radius + changeBy, positionY);
                     Point newCheck = Level.getStart(Game.getLevel(), Game.getScreen());
                     setCheckPoint(newCheck.x, newCheck.y);
-                } else if (obsDirBelow == 0 && defaultObstacle.getType().equals("C")){
+                } else if (obsDirBelow == 0 && defaultObstacle.getType().equals("C")) {
                     positionX = defaultPosition;
                     isJumping = false;
                     isDashing = false;
@@ -281,10 +306,10 @@ class Player {
                 if (hitLeftWall && Game.getScreen() > 0) {
                     //System.out.println("LEFT");
                     Game.decreaseLevel();
-                    setPosition(canvasWidth, positionY);
+                    setPosition(canvasWidth + radius - changeBy, positionY);
                     Point newCheck = Level.getStart(Game.getLevel(), Game.getScreen());
                     setCheckPoint(newCheck.x, newCheck.y);
-                } else if (obsDirBelow == 0 && defaultObstacle.getType().equals("C")){
+                } else if (obsDirBelow == 0 && defaultObstacle.getType().equals("C")) {
                     positionX = defaultPosition;
                     isJumping = false;
                     isDashing = false;

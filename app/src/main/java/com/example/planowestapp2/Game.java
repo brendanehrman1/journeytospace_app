@@ -64,15 +64,15 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         isLocked = intent.getBooleanExtra("LOCK", false);
 
-        this.context = context;
+        Game.context = context;
 
-        this.screen = 0;
+        screen = 0;
 
         screenChanged = true;
 
-        this.levelNum = intent.getIntExtra("LEVEL", 1);
+        levelNum = intent.getIntExtra("LEVEL", 1);
 
-        this.level = Level.getLevel(levelNum);
+        level = Level.getLevel(levelNum);
 
         setFocusable(true);
     }
