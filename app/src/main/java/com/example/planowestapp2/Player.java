@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
 
 class Player {
-    private static final int MAX_DASH = 3;
+    private static final int MAX_DASH = 4;
 
     private Context context;
     private double positionX;
@@ -69,12 +69,6 @@ class Player {
         this.jumpPoint = 0;
     }
 
-    public void climb() {
-        this.isClimbing = true;
-        this.isDashing = false;
-        this.isJumping = false;
-    }
-
     public double getRadius() {
         return radius;
     }
@@ -93,7 +87,7 @@ class Player {
 
     public void update() {
         if (isDashing) {
-            double changeBy = speed * 8;
+            double changeBy = speed * 6;
             if (dashPoint == MAX_DASH) {
                 isDashing = false;
                 isJumping = true;
@@ -109,10 +103,16 @@ class Player {
                         direction == 6 && (!moveDown(changeBy)) ||
                         direction == 7 && (!moveRight(changeBy) || !moveDown(changeBy))) {
                     if (!isClimbing) {
-                        isDashing = false;
-                        isJumping = true;
-                        jumpPoint = 8;
-                        direction = -1;
+                        if (direction == 1 || direction == 3)
+                            direction = 2;
+                        else if (direction == 5 || direction == 7)
+                            direction = 6;
+                        else {
+                            isDashing = false;
+                            isJumping = true;
+                            jumpPoint = 8;
+                            direction = -1;
+                        }
                     }
                 }
                 dashPoint++;
@@ -220,6 +220,8 @@ class Player {
                     isDashing = false;
                     isClimbing = true;
                     //System.out.println("HERE");
+                } else if (obsDirBelow == 0) {
+                    positionX = defaultPosition;
                 }
             }
             if (!isClimbing && !isDashing && !isJumping && obsDirBelow == 0) {
@@ -287,6 +289,8 @@ class Player {
                     isJumping = false;
                     isDashing = false;
                     isClimbing = true;
+                } else if (obsDirBelow == 0) {
+                    positionX = defaultPosition;
                 }
             }
             if (!isClimbing && !isDashing && !isJumping && obsDirBelow == 0) {
