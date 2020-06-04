@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
 
 class Player {
-    private static final int MAX_DASH = 4;
+    private static final int MAX_DASH = 6;
 
     private Context context;
     private double positionX;
@@ -87,8 +87,8 @@ class Player {
 
     public void update() {
         if (isDashing) {
-            double changeBy = speed * 6;
-            if (dashPoint == MAX_DASH) {
+            double changeBy = speed * 4;
+            if (direction % 2 == 1 && dashPoint == MAX_DASH * 2 / 3 || dashPoint == MAX_DASH) {
                 isDashing = false;
                 isJumping = true;
                 jumpPoint = 8;
