@@ -194,7 +194,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                     }
                     if (jumpBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id))) && !player.isJumping())
                         player.jump();
-                    if (levelNum > 1 && dashBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id))) && !player.isDashing() && !player.hasDashed())
+                    if (levelNum > 2 && dashBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id))) && !player.isDashing() && !player.hasDashed())
                         isDashing = true;
                 }
             }
@@ -269,7 +269,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawRect(leftDisplay, paint);
         canvas.drawRect(rightDisplay, paint);
         canvas.drawRect(jumpBtn, paint);
-        if (levelNum > 1)
+        if (levelNum > 2)
             canvas.drawRect(dashBtn, paint);
         canvas.drawText("DIRECTION: " + direction, 100, 300, paint);
     }
@@ -328,7 +328,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         leftBtn = new Rect(0, 0, leftSide + (DPAD_SIZE / 3), height);
         rightBtn = new Rect(rightSide - (DPAD_SIZE / 3), 0, width / 2, height);
         jumpBtn = new Rect(width - DPAD_SIZE - 50, height - (DPAD_SIZE * 2 / 3) - 25, width - (DPAD_SIZE * 1 / 3) - 50, height - 25);
-        if (levelNum == 1)
+        if (levelNum < 3)
             jumpBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 25, height - (DPAD_SIZE * 2 / 3) - 25, width - 25, height - 25);
         else
             dashBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 25, height - (DPAD_SIZE * 4 / 3) - 50, width - 25, height - (DPAD_SIZE * 2 / 3) - 50);

@@ -177,7 +177,28 @@ public class Level {
                     "BBBBBBBBBBBBBBPPPPBBBBBBBBBBBBBB"
 
 
-                    }
+                    },
+            {
+
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+
+
+            }
             };
     private static Point[][] startingLocs = {
                 {
@@ -192,6 +213,9 @@ public class Level {
                     new Point(16, 1),
                     new Point(16, 1),
                     new Point(16, 1)
+                },
+                {
+                    new Point(2, 1)
                 }
             };
 

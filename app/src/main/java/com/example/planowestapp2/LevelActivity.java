@@ -21,6 +21,10 @@ public class LevelActivity extends AppCompatActivity {
         goToLevel(1);
     }
 
+    public void goToLevelTwo(View v) {
+        goToLevel(2);
+    }
+
     public void goToLevel(int levelNum) {
         Intent intent = new Intent(LevelActivity.this, GameActivity.class);
         intent.putExtra("LOCK", isLocked);
