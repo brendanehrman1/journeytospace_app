@@ -11,6 +11,9 @@ import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 
+import static com.example.planowestapp2.Game.LEVEL_WIDTH;
+import static com.example.planowestapp2.Game.LEVEL_HEIGHT;
+
 class Player {
     private static final int MAX_DASH = 6;
 
@@ -38,7 +41,7 @@ class Player {
         this.positionX = positionX;
         this.positionY = positionY;
         this.radius = radius;
-        this.speed = 8;
+        this.speed = 10;
         this.jumpPoint = 0;
         this.lastRight = true;
         this.objects = new ArrayList<>();
@@ -87,71 +90,75 @@ class Player {
     }
 
     public void update() {
-        if (isDashing) {
-            double changeBy = speed * 4;
-            if (direction % 2 == 1 && dashPoint >= MAX_DASH * 2 / 3 || dashPoint >= MAX_DASH) {
-                isDashing = false;
-                isJumping = true;
-                jumpPoint = 8;
-                direction = -1;
-            } else {
-                boolean up = false;
-                boolean down = false;
-                boolean left = false;
-                boolean right = false;
-                if ((direction == -1 && lastRight || direction == 0) && !moveRight(changeBy) ||
-                        (direction == -1 && !lastRight || direction == 4) && !moveLeft(changeBy) ||
-                        direction == 1 && ((right = !moveRight(changeBy)) || (up = !moveUp(changeBy))) ||
-                        direction == 2 && (!moveUp(changeBy)) ||
-                        direction == 3 && ((left = !moveLeft(changeBy)) || (up = !moveUp(changeBy))) ||
-                        direction == 5 && ((left = !moveLeft(changeBy)) || (down = !moveDown(changeBy))) ||
-                        direction == 6 && (!moveDown(changeBy)) ||
-                        direction == 7 && ((right = !moveRight(changeBy)) || (down = !moveDown(changeBy)))) {
-                    if (!isClimbing) {
-                        if (direction == 1) {
-                            if (right)
-                                direction = 2;
-                            else
-                                direction = 0;
-                            dashPoint = MAX_DASH - 2;
-                        } else if (direction == 3) {
-                            if (left)
-                                direction = 2;
-                            else
-                                direction = 4;
-                            dashPoint = MAX_DASH - 2;
-                        } else if (direction == 5) {
-                            if (left)
-                                direction = 6;
-                            else
-                                direction = 4;
-                            dashPoint = MAX_DASH - 2;
-                        } else if (direction == 7) {
-                            if (right)
-                                direction = 6;
-                            else
-                                direction = 0;
-                            dashPoint = MAX_DASH - 2;
-                        } else {
-                            isDashing = false;
-                            isJumping = true;
-                            jumpPoint = 8;
-                            direction = -1;
+        if (isTouchingSpikes()) {
+            setPosition(checkPointX, checkPointY);
+        } else {
+            if (isDashing) {
+                double changeBy = speed * 4;
+                if (direction % 2 == 1 && dashPoint >= MAX_DASH * 2 / 3 || dashPoint >= MAX_DASH) {
+                    isDashing = false;
+                    isJumping = true;
+                    jumpPoint = 8;
+                    direction = -1;
+                } else {
+                    boolean up = false;
+                    boolean down = false;
+                    boolean left = false;
+                    boolean right = false;
+                    if ((direction == -1 && lastRight || direction == 0) && !moveRight(changeBy) ||
+                            (direction == -1 && !lastRight || direction == 4) && !moveLeft(changeBy) ||
+                            direction == 1 && ((right = !moveRight(changeBy)) || (up = !moveUp(changeBy))) ||
+                            direction == 2 && (!moveUp(changeBy)) ||
+                            direction == 3 && ((left = !moveLeft(changeBy)) || (up = !moveUp(changeBy))) ||
+                            direction == 5 && ((left = !moveLeft(changeBy)) || (down = !moveDown(changeBy))) ||
+                            direction == 6 && (!moveDown(changeBy)) ||
+                            direction == 7 && ((right = !moveRight(changeBy)) || (down = !moveDown(changeBy)))) {
+                        if (!isClimbing) {
+                            if (direction == 1) {
+                                if (right)
+                                    direction = 2;
+                                else
+                                    direction = 0;
+                                dashPoint = MAX_DASH - 2;
+                            } else if (direction == 3) {
+                                if (left)
+                                    direction = 2;
+                                else
+                                    direction = 4;
+                                dashPoint = MAX_DASH - 2;
+                            } else if (direction == 5) {
+                                if (left)
+                                    direction = 6;
+                                else
+                                    direction = 4;
+                                dashPoint = MAX_DASH - 2;
+                            } else if (direction == 7) {
+                                if (right)
+                                    direction = 6;
+                                else
+                                    direction = 0;
+                                dashPoint = MAX_DASH - 2;
+                            } else {
+                                isDashing = false;
+                                isJumping = true;
+                                jumpPoint = 8;
+                                direction = -1;
+                            }
                         }
                     }
+                    dashPoint++;
                 }
-                dashPoint++;
             }
-        }
-        if (isJumping) {
-            double changeBy = -4 * jumpPoint + 32;
-            jumpPoint++;
-            if (changeBy > 0 && !moveUp(changeBy)) {
-                jumpPoint = 8;
-            } else if (changeBy < 0 && !moveDown(-changeBy)) {
-                isJumping = false;
-                dashed = false;
-                jumpPoint = 0;
+            if (isJumping) {
+                double changeBy = -4 * jumpPoint + 32;
+                jumpPoint++;
+                if (changeBy > 0 && !moveUp(changeBy)) {
+                    jumpPoint = 8;
+                } else if (changeBy < 0 && !moveDown(-changeBy)) {
+                    isJumping = false;
+                    dashed = false;
+                    jumpPoint = 0;
+                }
             }
         }
     }
@@ -173,6 +180,24 @@ class Player {
         objects.add(o);
     }
 
+    public boolean isTouchingSpikes() {
+        boolean touchSpikes = false;
+        for (int i = 0; i < objects.size(); i++) {
+            Rect rect = objects.get(i).getRect();
+            if (objects.get(i).getType().equals("S") && (
+                    rect.left > positionX - radius && rect.left < positionX + radius && positionY + radius - rect.top >= 0 && positionY + radius - rect.top == 0 ||
+                            rect.left > positionX - radius && rect.left < positionX + radius && rect.bottom - (positionY - radius) >= 0 && rect.bottom - (positionY - radius) == 0 ||
+                            rect.top > positionY - radius && rect.top < positionY + radius && positionX - radius - rect.right >= 0 && positionX - radius - rect.right == 0 ||
+                            rect.top > positionY - radius && rect.top < positionY + radius && rect.left - (positionX + radius) >= 0 && rect.left - (positionX + radius) == 0)) {
+                touchSpikes = true;
+                //System.out.println("TOUCH");
+            } else if (objects.get(i).getType().equals("S")) {
+                System.out.println((rect.left > positionX - radius) + " " + (rect.left < positionX + radius));
+            }
+        }
+        return touchSpikes;
+    }
+
     public boolean moveRight() {
         return moveRight(speed);
     }
@@ -192,9 +217,9 @@ class Player {
     public boolean moveRight(double changeBy) {
         boolean canMove = true;
         boolean hitRightWall = false;
+        boolean touchSpikes = false;
         double defaultPosition = Integer.MAX_VALUE;
         Obstacle defaultObstacle = null;
-        boolean touchSpikes = false;
         int obsDirBelow = 0;
         for (int i = 0; i < objects.size(); i++) {
             Rect rect = objects.get(i).getRect();
@@ -238,7 +263,7 @@ class Player {
                     Game.increaseLevel();
                     setPosition(-radius + changeBy, positionY);
                     Point newCheck = Level.getStart(Game.getLevel(), Game.getScreen());
-                    setCheckPoint(newCheck.x, newCheck.y);
+                    setCheckPoint((int) ((double) (newCheck.x) / LEVEL_WIDTH * canvasWidth), (int) ((1 - ((double) (newCheck.y) / LEVEL_HEIGHT)) * canvasHeight - radius));
                 } else if (obsDirBelow == 0 && defaultObstacle.getType().equals("C")) {
                     positionX = defaultPosition;
                     isJumping = false;
@@ -308,7 +333,7 @@ class Player {
                     Game.decreaseLevel();
                     setPosition(canvasWidth + radius - changeBy, positionY);
                     Point newCheck = Level.getStart(Game.getLevel(), Game.getScreen());
-                    setCheckPoint(newCheck.x, newCheck.y);
+                    setCheckPoint((int) ((double) (newCheck.x) / LEVEL_WIDTH * canvasWidth), (int) ((1 - ((double) (newCheck.y) / LEVEL_HEIGHT)) * canvasHeight - radius));
                 } else if (obsDirBelow == 0 && defaultObstacle.getType().equals("C")) {
                     positionX = defaultPosition;
                     isJumping = false;
@@ -363,32 +388,27 @@ class Player {
                 //System.out.println((rect.left > positionX - radius) + " " + (rect.left < positionX + radius));
             }
         }
-        if (touchSpikes) {
-            setPosition(checkPointX, checkPointY);
-            return false;
-        } else {
-            if (canMove) {
-                if (!isClimbing || touchWall)
-                    positionY -= changeBy;
-                else if (isClimbing && !touchWall) {
-                    isClimbing = false;
-                    isJumping = true;
-                    jumpPoint = 9;
-                }
-            } else {
-                if (hitTopWall) {
-                    //System.out.println("UP");
-                    Game.increaseLevel();
-                    setPosition(positionX, canvasHeight * 15 / 16 - radius);
-                    Point newCheck = Level.getStart(Game.getLevel(), Game.getScreen());
-                    setCheckPoint(newCheck.x, newCheck.y);
-                } else {
-                    //System.out.println("HERE");
-                    positionY = defaultPosition;
-                }
+        if (canMove) {
+            if (!isClimbing || touchWall)
+                positionY -= changeBy;
+            else if (isClimbing && !touchWall) {
+                isClimbing = false;
+                isJumping = true;
+                jumpPoint = 9;
             }
-            return canMove;
+        } else {
+            if (hitTopWall) {
+                //System.out.println("UP");
+                Game.increaseLevel();
+                setPosition(positionX, canvasHeight * 15 / 16 - radius);
+                Point newCheck = Level.getStart(Game.getLevel(), Game.getScreen());
+                setCheckPoint((int) ((double) (newCheck.x) / LEVEL_WIDTH * canvasWidth), (int) ((1 - ((double) (newCheck.y) / LEVEL_HEIGHT)) * canvasHeight - radius));
+            } else {
+                //System.out.println("HERE");
+                positionY = defaultPosition;
+            }
         }
+        return canMove;
     }
 
     public boolean moveDown(double changeBy) {
@@ -423,34 +443,30 @@ class Player {
                 touchSpikes = true;
                 //System.out.println("TOUCH");
             } else if (objects.get(i).getType().equals("S")) {
-                //System.out.println((rect.left > positionX - radius) + " " + (rect.left < positionX + radius));
+                System.out.println((rect.left > positionX - radius) + " " + (rect.left < positionX + radius));
             }
         }
-        if (touchSpikes) {
-            setPosition(checkPointX, checkPointY);
-            return false;
+        if (canMove) {
+            if (!isClimbing || touchWall)
+                positionY += changeBy;
+            else if (isClimbing && !touchWall) {
+                isClimbing = false;
+                isJumping = true;
+                jumpPoint = 9;
+            }
         } else {
-            if (canMove) {
-                if (!isClimbing || touchWall)
-                    positionY += changeBy;
-                else if (isClimbing && !touchWall) {
-                    isClimbing = false;
-                    isJumping = true;
-                    jumpPoint = 9;
-                }
+            if (hitBottomWall && Game.getScreen() > 0) {
+                //System.out.println("DOWN");
+                Game.decreaseLevel();
+                setPosition(positionX, radius);
+                Point newCheck = Level.getStart(Game.getLevel(), Game.getScreen());
+                setCheckPoint((int) ((double) (newCheck.x) / LEVEL_WIDTH * canvasWidth), (int) ((1 - ((double) (newCheck.y) / LEVEL_HEIGHT)) * canvasHeight - radius));
             } else {
-                if (hitBottomWall && Game.getScreen() > 0) {
-                    //System.out.println("DOWN");
-                    Game.decreaseLevel();
-                    setPosition(positionX, radius);
-                    Point newCheck = Level.getStart(Game.getLevel(), Game.getScreen());
-                    setCheckPoint(newCheck.x, newCheck.y);
-                } else {
-                    positionY = defaultPosition;
-                }
+                positionY = defaultPosition;
             }
-            return canMove;
         }
+        return canMove;
+
     }
 
     public void dash(int direction) {
