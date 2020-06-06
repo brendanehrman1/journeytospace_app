@@ -10,24 +10,22 @@ import android.view.WindowManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    private boolean isLocked;
+    public static final String PREF_NAME = "sharedPrefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        isLocked = getIntent().getBooleanExtra("LOCK", true);
+        getSharedPreferences(PREF_NAME, MODE_PRIVATE).edit().clear().commit();
     }
 
     public void startGame(View v) {
         Intent intent = new Intent(MainActivity.this, LevelActivity.class);
-        intent.putExtra("LOCK", isLocked);
         startActivity(intent);
     }
 
     public void goToOptions(View v) {
         Intent intent = new Intent(MainActivity.this, OptionsActivity.class);
-        intent.putExtra("LOCK", isLocked);
         startActivity(intent);
     }
 }

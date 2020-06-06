@@ -193,8 +193,8 @@ public class Level {
                     "B                              B" +
                     "B                              B" +
                     "B                              B" +
-                    "B                              B" +
-                    "B                              B" +
+                    "B                               " +
+                    "B                               " +
                     "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
 
 
