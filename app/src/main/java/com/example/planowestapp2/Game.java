@@ -36,11 +36,12 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private Rect rightBtn;
     private Rect jumpBtn;
     private Rect dashBtn;
+    private Rect backBtn;
     private MotionEvent event;
     private int dpadX;
     private int dpadY;
     private int direction;
-    private boolean isLocked;
+    private static boolean isLocked;
     private static String[] level;
     private static int levelNum;
     private static int screen;
@@ -81,7 +82,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         screen++;
         //System.out.println(screen);
         if (screen == level.length) {
-            context.startActivity(new Intent(context, LevelActivity.class));
+            Intent intent = new Intent(context, LevelActivity.class);
+            intent.putExtra("LOCK", isLocked);
+            context.startActivity(intent);
             screenTransition = true;
         } else {
             screenChanged = true;
@@ -196,6 +199,12 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                         player.jump();
                     if (levelNum > 2 && dashBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id))) && !player.isDashing() && !player.hasDashed())
                         isDashing = true;
+                    if (backBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id)))) {
+                        Intent intent = new Intent(context, LevelActivity.class);
+                        intent.putExtra("LOCK", isLocked);
+                        context.startActivity(intent);
+                        screenTransition = true;
+                    }
                 }
             }
             if (goingUp && goingDown) {
@@ -269,6 +278,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawRect(leftDisplay, paint);
         canvas.drawRect(rightDisplay, paint);
         canvas.drawRect(jumpBtn, paint);
+        canvas.drawRect(backBtn, paint);
         if (levelNum > 2)
             canvas.drawRect(dashBtn, paint);
         canvas.drawText("DIRECTION: " + direction, 100, 300, paint);
@@ -332,6 +342,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             jumpBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 25, height - (DPAD_SIZE * 2 / 3) - 25, width - 25, height - 25);
         else
             dashBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 25, height - (DPAD_SIZE * 4 / 3) - 50, width - 25, height - (DPAD_SIZE * 2 / 3) - 50);
+        backBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 25, 25, width - 25, (DPAD_SIZE / 3) + 25);
     }
 
     public void drawUPS(Canvas canvas) {

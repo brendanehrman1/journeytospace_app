@@ -17,7 +17,7 @@ public class OptionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
         lockControls = findViewById(R.id.lockControls);
-        isLocked = getIntent().getBooleanExtra("LOCK", false);
+        isLocked = getIntent().getBooleanExtra("LOCK", true);
         lockControls.setChecked(isLocked);
     }
 
