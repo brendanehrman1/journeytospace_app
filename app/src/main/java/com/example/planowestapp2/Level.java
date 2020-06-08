@@ -178,42 +178,206 @@ public class Level {
 
 
                     },
-                    {
+            {
 
                     "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
                     "B                               " +
                     "B                               " +
-                    "B                               " +
-                    "B                              C" +
-                    "B                              C" +
-                    "B                              C" +
-                    "B                              C" +
-                    "B                              C" +
-                    "B                              C" +
-                    "B                              C" +
-                    "B                              C" +
-                    "B                              C" +
-                    "B                              C" +
-                    "B                              C" +
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+
+
+            },
+
+            {
+
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                   BBBB       B" +
+                    "B                   BBBB       B" +
+                    "B                   BBBB       B" +
+                    "B                   BBBB       B" +
+                    "B                   BBBB       B" +
+                    "B      CBBC         BBBB       B" +
+                    "B      CBBC         BBBB        " +
+                    "B      CBBC         BBBB        " +
+                    "B      CBBC         BBBBBBBBBBBB" +
+                    "B      CBBC         BBBBBBBBBBBB" +
                     "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
 
                     "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
-                    "             BBBBBB             " +
-                    "             BBBBBB             " +
-                    "             BBBBBB             " +
-                    "BBBC         BBBBBB            C" +
-                    "BBBC        SBBBBBB            C" +
-                    "BBBC       S BBBBBB            C" +
-                    "BBBC      SSSBBBBBB            C" +
-                    "BBBC      SSSBBBBBB            C" +
-                    "BBBC     SSSSBBBBBB            C" +
-                    "BBBC      SS                   C" +
-                    "BBBC                           C" +
-                    "BBBC       PPBBBBBB            C" +
-                    "BBBC         BBBBBB            C" +
-                    "BBBBSSSSSSSSSBBBBBB            C" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B              BBBBBB          B" +
+                    "B                               " +
+                    "B                               " +
+                    "B                         BBBBBB" +
+                    "B       BBBBBB                 B" +
+                    "B                              B" +
+                    "                               B" +
+                    "                               B" +
+                    "BBBBB                          B" +
+                    "BBBBB                          B" +
                     "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
-                    }
+
+                    "BBBBBBBBBBBBBB    BBBBBBBBBBBBBB" +
+                    "B                              B" +
+                    "BPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPB" +
+                    "B                              B" +
+                    "B                              B" +
+                    "BBBBBBBBBBBBBBBBBBS            B" +
+                    "     B                         B" +
+                    "     B                         B" +
+                    "BB                      SSBBBBBB" +
+                    "BB                             B" +
+                    "BB                             B" +
+                    "BB                             B" +
+                    "BBBBBB       SBBBBS            B" +
+                    "BB                             B" +
+                    "BB                             B" +
+                    "BBSSSSSSSSSSSSSSSSSSSSSSSSSSSSSB",
+
+                    "BBBBBBBBBBBBBB    BBBBBBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS    BBBB    SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS    BBBB    SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS    BBBB    SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBB            BBBBBBBBBB" +
+                    "BBBBBBBBBB            BBBBBBBBBB" +
+                    "BBBBBBBBBBBBBBPPPPBBBBBBBBBBBBBB",
+
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B  BB  B   B   BBBB   BBBB   B B" +
+                    "B  B B B   B   B      B      B B" +
+                    "B  B B B   B   B      BBBB   B B" +
+                    "B  B B B   B   B      B        B" +
+                    "B  B  BB   B   BBBB   BBBB   B B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                               " +
+                    "B                               " +
+                    "B                    BBBBBBBBBBB" +
+                    "B                    BBBBBBBBBBB" +
+                    "BBBBBBBBBBBBBBPPPPBBBBBBBBBBBBBB",
+
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B        BBBB       BBBB       B" +
+                    "B        BBBS       SBBB       B" +
+                    "B        BBBS       SBBB       B" +
+                    "B        BBBS       SBBB       B" +
+                    "B        BBBS       SBBB       B" +
+                    "         BBBS       SBBB        " +
+                    "         BBBS       SBBB        " +
+                    "BBBBBBBBBBBBS       SBBBBBBBBBBB" +
+                    "BBBBBBBBBBBBS       SBBBBBBBBBBB" +
+                    "BBBBBBBBBBBBBSSSSSSSBBBBBBBBBBBB",
+
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                   BB         B" +
+                    "B                              B" +
+                    "B       BB                      " +
+                    "B                               " +
+                    "B                          BBBBB" +
+                    "B                              B" +
+                    "                               B" +
+                    "                               B" +
+                    "BBBBB                          B" +
+                    "BBBBB                          B" +
+                    "BBBBBSSSSSSSSSSSSSSSSSSSSSSSSSSB",
+
+                    "BBBBBBBBBBBBBB    BBBBBBBBBBBBBB" +
+                    "BBBBBBBBBBBBBB                 B" +
+                    "B            B                 B" +
+                    "B            BBBBBBBBBBBBB     B" +
+                    "B    B       B           B     B" +
+                    "B    B       B           B     B" +
+                    "B    B       B     B     B    BB" +
+                    "     B       B     B     S    BB" +
+                    "     B       B    BB          BB" +
+                    "BBBBBB       S    BB          BB" +
+                    "BBBBBB            BB          BB" +
+                    "BBBBBB            BB     SBBBBBB" +
+                    "BBBBBB            BB     SBBBBBB" +
+                    "BBBBBB       SBBBBBB     SBBBBBB" +
+                    "BBBBBB       SBBBBBB     SBBBBBB" +
+                    "BBBBBBSSSSSSSBBBBBBBSSSSSBBBBBBB",
+
+                    "BBBBBBBBBBBBBB    BBBBBBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS    BBBB    SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS    SSSS    SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS            SBBBBBBBBB" +
+                    "BBBBBBBBBS    BBBB    SBBBBBBBBB" +
+                    "BBBBBBBBBB            BBBBBBBBBB" +
+                    "BBBBBBBBBB            BBBBBBBBBB" +
+                    "BBBBBBBBBBBBBBPPPPBBBBBBBBBBBBBB",
+
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B              BB              B" +
+                    "B             B  B             B" +
+                    "B         BBBB    BBBB         B" +
+                    "B          B        B          B" +
+                    "B           B      B           B" +
+                    "B          B BBBBBB B          B" +
+                    "B         B B      B B         B" +
+                    "B         BB        BB         B" +
+                    "B                              B" +
+                    "B                              B" +
+                    "B                               " +
+                    "B                               " +
+                    "BBBBBBBBBBBBBBPPPPBBBBBBBBBBBBBB"
+
+
+
+
+
+            }
+
             };
     private static Point[][] startingLocs = {
                 {
@@ -226,11 +390,22 @@ public class Level {
                     new Point(1, 3),
                     new Point(2, 11),
                     new Point(16, 1),
-                    new Point(16, 1),
                     new Point(16, 1)
                 },
                 {
                     new Point(2, 1)
+                },
+                {
+                    new Point(2, 1),
+                    new Point(2, 3),
+                    new Point(1, 8),
+                    new Point(16, 1),
+                    new Point(2, 1),
+                    new Point(2, 3),
+                    new Point(2, 3),
+                    new Point(2, 7),
+                    new Point(16, 1),
+                    new Point(16, 1)
                 }
             };
 

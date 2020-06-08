@@ -3,6 +3,7 @@ package com.example.planowestapp2;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,6 +14,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.core.content.ContextCompat;
+import static com.example.planowestapp2.MainActivity.PREF_NAME;
 
 import java.util.ArrayList;
 
@@ -36,11 +38,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private Rect rightBtn;
     private Rect jumpBtn;
     private Rect dashBtn;
+    private Rect backBtn;
     private MotionEvent event;
     private int dpadX;
     private int dpadY;
     private int direction;
-    private boolean isLocked;
+    private static boolean isLocked;
+    private static double startTime;
     private static String[] level;
     private static int levelNum;
     private static int screen;
@@ -62,11 +66,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         thread = new GameThread(this, getHolder());
 
-        isLocked = intent.getBooleanExtra("LOCK", false);
+        isLocked = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getBoolean("LOCK", true);
 
         Game.context = context;
 
         screen = 0;
+
+        startTime = System.currentTimeMillis();
 
         screenChanged = true;
 
@@ -81,7 +87,37 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         screen++;
         //System.out.println(screen);
         if (screen == level.length) {
-            context.startActivity(new Intent(context, LevelActivity.class));
+            Intent intent = new Intent(context, LevelActivity.class);
+            double diffTime = System.currentTimeMillis() - startTime;
+            String time = Double.toString(diffTime / 1000.0);
+            SharedPreferences.Editor edit = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit();
+            if (levelNum == 1) {
+                String oldTime = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getString("LEVEL_ONE_TIME", null);
+                if (oldTime == null || Double.parseDouble(oldTime) > diffTime) {
+                    edit.putString("LEVEL_ONE_TIME", time);
+                }
+                edit.putBoolean("LEVEL_ONE_COMPLETE", true);
+            } else if (levelNum == 2) {
+                String oldTime = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getString("LEVEL_TWO_TIME", null);
+                if (oldTime == null || Double.parseDouble(oldTime) > diffTime) {
+                    edit.putString("LEVEL_TWO_TIME", time);
+                }
+                edit.putBoolean("LEVEL_TWO_COMPLETE", true);
+            } else if (levelNum == 3) {
+                String oldTime = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getString("LEVEL_THREE_TIME", null);
+                if (oldTime == null || Double.parseDouble(oldTime) > diffTime) {
+                    edit.putString("LEVEL_THREE_TIME", time);
+                }
+                edit.putBoolean("LEVEL_THREE_COMPLETE", true);
+            } else {
+                String oldTime = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getString("LEVEL_FOUR_TIME", null);
+                if (oldTime == null || Double.parseDouble(oldTime) > diffTime) {
+                    edit.putString("LEVEL_FOUR_TIME", time);
+                }
+                edit.putBoolean("LEVEL_FOUR_COMPLETE", true);
+            }
+            edit.apply();
+            context.startActivity(intent);
             screenTransition = true;
         } else {
             screenChanged = true;
@@ -196,6 +232,12 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                         player.jump();
                     if (levelNum > 2 && dashBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id))) && !player.isDashing() && !player.hasDashed())
                         isDashing = true;
+                    if (backBtn.contains((int) event.getX(event.findPointerIndex(id)), (int) event.getY(event.findPointerIndex(id)))) {
+                        Intent intent = new Intent(context, LevelActivity.class);
+                        intent.putExtra("LOCK", isLocked);
+                        context.startActivity(intent);
+                        screenTransition = true;
+                    }
                 }
             }
             if (goingUp && goingDown) {
@@ -269,6 +311,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawRect(leftDisplay, paint);
         canvas.drawRect(rightDisplay, paint);
         canvas.drawRect(jumpBtn, paint);
+        canvas.drawRect(backBtn, paint);
         if (levelNum > 2)
             canvas.drawRect(dashBtn, paint);
         canvas.drawText("DIRECTION: " + direction, 100, 300, paint);
@@ -332,6 +375,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             jumpBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 25, height - (DPAD_SIZE * 2 / 3) - 25, width - 25, height - 25);
         else
             dashBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 25, height - (DPAD_SIZE * 4 / 3) - 50, width - 25, height - (DPAD_SIZE * 2 / 3) - 50);
+        backBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 25, 25, width - 25, (DPAD_SIZE / 3) + 25);
     }
 
     public void drawUPS(Canvas canvas) {
