@@ -178,27 +178,42 @@ public class Level {
 
 
                     },
-            {
+                    {
 
                     "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
-                    "B                              B" +
-                    "B                              B" +
-                    "B                              B" +
-                    "B                              B" +
-                    "B                              B" +
-                    "B                              B" +
-                    "B                              B" +
-                    "B                              B" +
-                    "B                              B" +
-                    "B                              B" +
-                    "B                              B" +
-                    "B                              B" +
-                    "B                              B" +
-                    "B                              B" +
-                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+                    "B                               " +
+                    "B                               " +
+                    "B                               " +
+                    "B                              C" +
+                    "B                              C" +
+                    "B                              C" +
+                    "B                              C" +
+                    "B                              C" +
+                    "B                              C" +
+                    "B                              C" +
+                    "B                              C" +
+                    "B                              C" +
+                    "B                              C" +
+                    "B                              C" +
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
 
-
-            }
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" +
+                    "             BBBBBB             " +
+                    "             BBBBBB             " +
+                    "             BBBBBB             " +
+                    "BBBC         BBBBBB            C" +
+                    "BBBC        SBBBBBB            C" +
+                    "BBBC       S BBBBBB            C" +
+                    "BBBC      SSSBBBBBB            C" +
+                    "BBBC      SSSBBBBBB            C" +
+                    "BBBC     SSSSBBBBBB            C" +
+                    "BBBC      SS                   C" +
+                    "BBBC                           C" +
+                    "BBBC       PPBBBBBB            C" +
+                    "BBBC         BBBBBB            C" +
+                    "BBBBSSSSSSSSSBBBBBB            C" +
+                    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                    }
             };
     private static Point[][] startingLocs = {
                 {
