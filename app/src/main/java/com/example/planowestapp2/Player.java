@@ -259,6 +259,7 @@ class Player {
                 isJumping = false;
                 isDashing = false;
                 isClimbing = true;
+                dashed = false;
                 //System.out.println("HERE");
             } else if (obsDirBelow == 0) {
                 positionX = defaultPosition;
@@ -315,6 +316,7 @@ class Player {
                 isJumping = false;
                 isDashing = false;
                 isClimbing = true;
+                dashed = false;
             } else if (obsDirBelow == 0) {
                 positionX = defaultPosition;
             }
