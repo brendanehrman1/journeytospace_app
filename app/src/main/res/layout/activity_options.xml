@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/level_four_background"
     tools:context=".OptionsActivity">
 
     <Switch
@@ -23,6 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="148dp"
         android:text="LOCK DPAD LOCATION"
+        android:textColor="#FF00FCFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,8 +35,10 @@
         android:id="@+id/backBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="42dp"
-        android:layout_marginTop="326dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="284dp"
+        android:background="#FF00FCFF"
+        android:textColor="#FF000537"
         android:onClick="goBack"
         android:text="BACK"
         app:layout_constraintStart_toStartOf="parent"

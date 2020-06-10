@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/level_one_background"
     tools:context=".LevelActivity">
 
     <ImageView
@@ -53,6 +54,8 @@
         android:layout_marginStart="120dp"
         android:layout_marginBottom="100dp"
         android:onClick="goToLevelOne"
+        android:background="#FF00FCFF"
+        android:textColor="#FF000537"
         android:text="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,6 +68,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="100dp"
         android:onClick="goToLevelTwo"
+        android:background="#FF00FCFF"
+        android:textColor="#FF000537"
         android:text="2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/level3Btn"
@@ -78,6 +83,8 @@
         android:layout_marginEnd="120dp"
         android:layout_marginBottom="100dp"
         android:onClick="goToLevelThree"
+        android:background="#FF00FCFF"
+        android:textColor="#FF000537"
         android:text="3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -89,6 +96,8 @@
         android:layout_height="wrap_content"
         android:onClick="goToLevelFour"
         android:text="FINAL"
+        android:background="#FF00FCFF"
+        android:textColor="#FF000537"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/level3Btn"
         app:layout_constraintStart_toEndOf="@+id/level1Btn"
@@ -101,6 +110,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginBottom="40dp"
+        android:background="#FF00FCFF"
+        android:textColor="#FF000537"
         android:onClick="goBack"
         android:text="BACK"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -111,6 +122,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/level1Btn"
         app:layout_constraintStart_toStartOf="@+id/level1Btn"
         app:layout_constraintTop_toBottomOf="@+id/level1Btn" />
@@ -120,6 +132,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/level2Btn"
         app:layout_constraintStart_toStartOf="@+id/level2Btn"
         app:layout_constraintTop_toBottomOf="@+id/level2Btn" />
@@ -129,6 +142,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/level3Btn"
         app:layout_constraintStart_toStartOf="@+id/level3Btn"
         app:layout_constraintTop_toBottomOf="@+id/level3Btn" />
@@ -138,6 +152,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/level4Btn"
         app:layout_constraintStart_toStartOf="@+id/level4Btn"
         app:layout_constraintTop_toBottomOf="@+id/level4Btn" />

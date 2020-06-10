@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -282,6 +284,18 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         if (!screenTransition) {
             this.canvas = canvas;
             super.draw(canvas);
+
+            Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.level_one_background);
+            if (levelNum == 2) {
+                background = BitmapFactory.decodeResource(getResources(), R.drawable.level_two_background);
+            } else if (levelNum == 3) {
+                background = BitmapFactory.decodeResource(getResources(), R.drawable.level_three_background);
+            } else if (levelNum == 4) {
+                background = BitmapFactory.decodeResource(getResources(), R.drawable.level_four_background);
+            }
+            canvas.drawColor(Color.BLACK);
+            canvas.drawBitmap(background, 0, 0, new Paint());
+
             boolean first = upBtn == null;
 
             instantiateValues(first);
@@ -292,18 +306,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
             screenChanged = false;
         } else {
-            Paint paint = new Paint();
-            int color = ContextCompat.getColor(getContext(), R.color.black);
-            paint.setColor(color);
-            canvas.drawRect(new Rect(0, 0, width, height), paint);
+            canvas.drawColor(Color.BLACK);
         }
     }
 
     public void drawScreen() {
-        drawUPS(canvas);
-        drawFPS(canvas);
         Paint paint = new Paint();
-        int color = ContextCompat.getColor(getContext(), R.color.magenta);
+        int color = ContextCompat.getColor(getContext(), R.color.grey);
         paint.setColor(color);
         paint.setTextSize(35);
         canvas.drawRect(upDisplay, paint);
@@ -314,7 +323,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawRect(backBtn, paint);
         if (levelNum > 2)
             canvas.drawRect(dashBtn, paint);
-        canvas.drawText("DIRECTION: " + direction, 100, 300, paint);
     }
 
     public void drawObjects(boolean first, boolean changed) {
@@ -329,9 +337,16 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                     Rect rect = new Rect(j * (width / LEVEL_WIDTH), i * (height / LEVEL_HEIGHT), (j + 1) * (width / LEVEL_WIDTH), (i + 1) * (height / LEVEL_HEIGHT));
                     int color = ContextCompat.getColor(getContext(), R.color.black);
                     Obstacle obstacle = new Obstacle(rect, level[screen].substring(index, index + 1));
-                    if (obstacle.getType().equals("B"))
+                    if (obstacle.getType().equals("B")) {
                         color = ContextCompat.getColor(getContext(), R.color.green);
-                    else if (obstacle.getType().equals("S"))
+                        if (levelNum == 2) {
+                            color = ContextCompat.getColor(getContext(), R.color.white);
+                        } else if (levelNum == 3) {
+                            color = ContextCompat.getColor(getContext(), R.color.light_blue);
+                        } else if (levelNum == 4) {
+                            color = ContextCompat.getColor(getContext(), R.color.dark_grey);
+                        }
+                    } else if (obstacle.getType().equals("S"))
                         color = ContextCompat.getColor(getContext(), R.color.red);
                     else if (obstacle.getType().equals("C"))
                         color = ContextCompat.getColor(getContext(), R.color.orange);
@@ -376,23 +391,5 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         else
             dashBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 25, height - (DPAD_SIZE * 4 / 3) - 50, width - 25, height - (DPAD_SIZE * 2 / 3) - 50);
         backBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 25, 25, width - 25, (DPAD_SIZE / 3) + 25);
-    }
-
-    public void drawUPS(Canvas canvas) {
-        String averageUPS = Double.toString(thread.getAverageUPS());
-        Paint paint = new Paint();
-        int color = ContextCompat.getColor(getContext(), R.color.magenta);
-        paint.setColor(color);
-        paint.setTextSize(35);
-        canvas.drawText("UPS: " + averageUPS, 100, 100, paint);
-    }
-
-    public void drawFPS(Canvas canvas) {
-        String averageFPS = Double.toString(thread.getAverageFPS());
-        Paint paint = new Paint();
-        int color = ContextCompat.getColor(getContext(), R.color.magenta);
-        paint.setColor(color);
-        paint.setTextSize(35);
-        canvas.drawText("FPS: " + averageFPS, 100, 200, paint);
     }
 }
