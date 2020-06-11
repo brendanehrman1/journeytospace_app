@@ -762,6 +762,8 @@ public class Level {
     }
 
     public static Point getStart(int level, int scene) {
+        if (scene >= startingLocs[level - 1].length)
+            return startingLocs[level - 1][startingLocs[level - 1].length - 1];
         return startingLocs[level - 1][scene];
     }
 }

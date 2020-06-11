@@ -10,7 +10,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -95,25 +97,25 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             SharedPreferences.Editor edit = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit();
             if (levelNum == 1) {
                 String oldTime = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getString("LEVEL_ONE_TIME", null);
-                if (oldTime == null || Double.parseDouble(oldTime) > diffTime) {
+                if (oldTime == null || Double.parseDouble(oldTime) * 1000 > diffTime) {
                     edit.putString("LEVEL_ONE_TIME", time);
                 }
                 edit.putBoolean("LEVEL_ONE_COMPLETE", true);
             } else if (levelNum == 2) {
                 String oldTime = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getString("LEVEL_TWO_TIME", null);
-                if (oldTime == null || Double.parseDouble(oldTime) > diffTime) {
+                if (oldTime == null || Double.parseDouble(oldTime) * 1000 > diffTime) {
                     edit.putString("LEVEL_TWO_TIME", time);
                 }
                 edit.putBoolean("LEVEL_TWO_COMPLETE", true);
             } else if (levelNum == 3) {
                 String oldTime = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getString("LEVEL_THREE_TIME", null);
-                if (oldTime == null || Double.parseDouble(oldTime) > diffTime) {
+                if (oldTime == null || Double.parseDouble(oldTime) * 1000 > diffTime) {
                     edit.putString("LEVEL_THREE_TIME", time);
                 }
                 edit.putBoolean("LEVEL_THREE_COMPLETE", true);
             } else {
                 String oldTime = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getString("LEVEL_FOUR_TIME", null);
-                if (oldTime == null || Double.parseDouble(oldTime) > diffTime) {
+                if (oldTime == null || Double.parseDouble(oldTime) * 1000 > diffTime) {
                     edit.putString("LEVEL_FOUR_TIME", time);
                 }
                 edit.putBoolean("LEVEL_FOUR_COMPLETE", true);
@@ -285,16 +287,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             this.canvas = canvas;
             super.draw(canvas);
 
-            Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.level_one_background);
-            if (levelNum == 2) {
-                background = BitmapFactory.decodeResource(getResources(), R.drawable.level_two_background);
-            } else if (levelNum == 3) {
-                background = BitmapFactory.decodeResource(getResources(), R.drawable.level_three_background);
-            } else if (levelNum == 4) {
-                background = BitmapFactory.decodeResource(getResources(), R.drawable.level_four_background);
-            }
-            canvas.drawColor(Color.BLACK);
-            canvas.drawBitmap(background, 0, 0, new Paint());
+            canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
             boolean first = upBtn == null;
 
@@ -302,7 +295,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             player.draw(canvas);
             drawObjects(first, screenChanged);
             drawScreen();
-
 
             screenChanged = false;
         } else {
@@ -367,8 +359,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void instantiateValues(boolean first) {
-        width = canvas.getWidth();
-        height = canvas.getHeight();
+        width = 1220;
+        height = 720;
         if (first) {
             dpadX = 25 + (DPAD_SIZE / 2);
             dpadY = height - 25 - (DPAD_SIZE / 2);
@@ -385,11 +377,11 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         downBtn = new Rect(0, downSide - (DPAD_SIZE / 3), width / 2, height);
         leftBtn = new Rect(0, 0, leftSide + (DPAD_SIZE / 3), height);
         rightBtn = new Rect(rightSide - (DPAD_SIZE / 3), 0, width / 2, height);
-        jumpBtn = new Rect(width - DPAD_SIZE - 50, height - (DPAD_SIZE * 2 / 3) - 25, width - (DPAD_SIZE * 1 / 3) - 50, height - 25);
+        jumpBtn = new Rect(width - DPAD_SIZE - 70, height - (DPAD_SIZE * 2 / 3) - 25, width - (DPAD_SIZE * 1 / 3) - 70, height - 25);
         if (levelNum < 3)
-            jumpBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 25, height - (DPAD_SIZE * 2 / 3) - 25, width - 25, height - 25);
+            jumpBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 45, height - (DPAD_SIZE * 2 / 3) - 25, width - 45, height - 25);
         else
-            dashBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 25, height - (DPAD_SIZE * 4 / 3) - 50, width - 25, height - (DPAD_SIZE * 2 / 3) - 50);
-        backBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 25, 25, width - 25, (DPAD_SIZE / 3) + 25);
+            dashBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 45, height - (DPAD_SIZE * 4 / 3) - 50, width - 45, height - (DPAD_SIZE * 2 / 3) - 50);
+        backBtn = new Rect(width - (DPAD_SIZE * 2 / 3) - 45, 25, width - 45, (DPAD_SIZE / 3) + 25);
     }
 }
